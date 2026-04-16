@@ -38,6 +38,8 @@ import ps.reso.instaeclipse.utils.toast.CustomToast;
 
 public class UIHookManager {
 
+    private static final String INSTAGRAM_MAIN_ACTIVITY = "com.instagram.mainactivity.InstagramMainActivity";
+
     @SuppressLint("StaticFieldLeak")
     private static Activity currentActivity;
     public static Activity getCurrentActivity() {
@@ -115,7 +117,7 @@ public class UIHookManager {
             // Precise search for the standard onCreate(Bundle) signature
             var methods = Module.dexKitBridge.findMethod(create()
                     .matcher(org.luckypray.dexkit.query.matchers.MethodMatcher.create()
-                            .declaredClass("com.instagram.mainactivity.InstagramMainActivity")
+                            .declaredClass(INSTAGRAM_MAIN_ACTIVITY)
                             .name("onCreate")
                             .paramTypes("android.os.Bundle")
                             .returnType("void")
@@ -127,7 +129,7 @@ public class UIHookManager {
                 XposedBridge.log("(InstaEclipse): ⚠️ Specific onCreate not found, searching by signature...");
                 methods = Module.dexKitBridge.findMethod(create()
                         .matcher(org.luckypray.dexkit.query.matchers.MethodMatcher.create()
-                                .declaredClass("com.instagram.mainactivity.InstagramMainActivity")
+                                .declaredClass(INSTAGRAM_MAIN_ACTIVITY)
                                 .paramTypes("android.os.Bundle")
                                 .returnType("void")
                         )
@@ -136,7 +138,7 @@ public class UIHookManager {
 
             if (!methods.isEmpty()) {
                 String methodName = methods.get(0).getName();
-                XposedHelpers.findAndHookMethod("com.instagram.mainactivity.InstagramMainActivity", classLoader, methodName, Bundle.class, new XC_MethodHook() {
+                XposedHelpers.findAndHookMethod(INSTAGRAM_MAIN_ACTIVITY, classLoader, methodName, Bundle.class, new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         final Activity activity = (Activity) param.thisObject;
@@ -187,7 +189,7 @@ public class UIHookManager {
         try {
             List<MethodData> candidates = Module.dexKitBridge.findMethod(org.luckypray.dexkit.query.FindMethod.create()
                     .matcher(org.luckypray.dexkit.query.matchers.MethodMatcher.create()
-                            .declaredClass("com.instagram.mainactivity.InstagramMainActivity")
+                            .declaredClass(INSTAGRAM_MAIN_ACTIVITY)
                             .modifiers(java.lang.reflect.Modifier.PUBLIC)
                             .paramCount(0)
                             .returnType("void")
@@ -207,7 +209,7 @@ public class UIHookManager {
                     continue;
                 }
 
-                XposedHelpers.findAndHookMethod("com.instagram.mainactivity.InstagramMainActivity", classLoader, methodName, new XC_MethodHook() {
+                XposedHelpers.findAndHookMethod(INSTAGRAM_MAIN_ACTIVITY, classLoader, methodName, new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) {
                         final Activity activity = (Activity) param.thisObject;
