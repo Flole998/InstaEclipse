@@ -138,6 +138,10 @@ public class UIHookManager {
 
             if (!methods.isEmpty()) {
                 String methodName = methods.get(0).getName();
+                if (methodName == null || methodName.isEmpty()) {
+                    XposedBridge.log("(InstaEclipse): ❌ Invalid onCreate method name discovered");
+                    return;
+                }
                 XposedHelpers.findAndHookMethod(INSTAGRAM_MAIN_ACTIVITY, classLoader, methodName, Bundle.class, new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -198,6 +202,9 @@ public class UIHookManager {
 
             for (MethodData methodData : candidates) {
                 String methodName = methodData.getName();
+                if (methodName == null || methodName.isEmpty()) {
+                    continue;
+                }
 
                 // Skip constructors and static initializers
                 if (methodName.contains("<init>") || methodName.contains("<clinit>")) {
