@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
@@ -134,11 +135,8 @@ public class UIHookManager {
             }
 
             if (!methods.isEmpty()) {
-                // Get the first match
-                var methodData = methods.get(0);
-                java.lang.reflect.Method targetMethod = methodData.getMethodInstance(classLoader);
-
-                XposedBridge.hookMethod(targetMethod, new XC_MethodHook() {
+                String methodName = methods.get(0).getName();
+                XposedHelpers.findAndHookMethod("com.instagram.mainactivity.InstagramMainActivity", classLoader, methodName, Bundle.class, new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         final Activity activity = (Activity) param.thisObject;
@@ -209,8 +207,7 @@ public class UIHookManager {
                     continue;
                 }
 
-                java.lang.reflect.Method targetMethod = methodData.getMethodInstance(classLoader);
-                XposedBridge.hookMethod(targetMethod, new XC_MethodHook() {
+                XposedHelpers.findAndHookMethod("com.instagram.mainactivity.InstagramMainActivity", classLoader, methodName, new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) {
                         final Activity activity = (Activity) param.thisObject;
